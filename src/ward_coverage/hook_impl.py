@@ -1,15 +1,15 @@
 import os
 from distutils.command.install_headers import install_headers
-from typing import Any, Dict
+from typing import Any, Dict, List, Union
 from unittest import mock
 
-import coverage
-import toml
+import coverage # type: ignore
+import toml # type: ignore
 from rich.console import ConsoleRenderable
 from rich.panel import Panel
 from rich.table import Table
-from ward.config import Config
-from ward.hooks import hook
+from ward.config import Config # type: ignore
+from ward.hooks import hook # type: ignore
 
 cov: coverage.Coverage
 
@@ -40,7 +40,7 @@ def before_session(config: Config):
 
 
 @hook
-def after_session(config: Config) -> ConsoleRenderable:
+def after_session(config: Config) -> Union[ConsoleRenderable, None]:
     global cov
     
     report = get_report()
@@ -55,8 +55,10 @@ def after_session(config: Config) -> ConsoleRenderable:
     if "term" in report_type:
         table = render_table(report)
         return Panel(table, title="[white bold]Coverage report", border_style="green", expand=False)
+    
+    return None
 
-def get_config(config):
+def get_config(config: Config) -> Dict[str, Any]:
     coverage_config: Dict[str, Any] = config.plugin_config.get("coverage", {})
 
     if len(coverage_config) == 0:
@@ -65,7 +67,7 @@ def get_config(config):
     return coverage_config
 
 
-def get_report():
+def get_report() -> dict:
     report: dict = {}
     cov.stop()
     with mock.patch("json.dump", lambda *args, **kwargs: report.update(args[0])):
@@ -74,7 +76,7 @@ def get_report():
     return report
 
 
-def create_report_files(report_type):
+def create_report_files(report_type: List[str]) -> None:
     for rt in report_type:
         if rt not in ["lcov", "html", "xml", "json", "term"]:
             raise Exception(
@@ -94,7 +96,7 @@ def create_report_files(report_type):
             cov.json_report()
 
 
-def render_table(report):
+def render_table(report: dict) -> Table:
     table = get_preformatted_table()
     for filename, file_report in report["files"].items():
         table.add_row(
@@ -140,7 +142,7 @@ def preprocess_missing_lines(missing_lines: list) -> str:
     return ", ".join(res)
 
 
-def group_sequence(lst) -> list:
+def group_sequence(lst: List[int]) -> list:
     res = [[lst[0]]]
     for i in range(1, len(lst)):
         if lst[i - 1] + 1 == lst[i]:
