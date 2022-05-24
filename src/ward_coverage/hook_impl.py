@@ -4,6 +4,7 @@ from typing import Any, Dict
 from unittest import mock
 
 import coverage
+import toml
 from rich.console import ConsoleRenderable
 from rich.panel import Panel
 from rich.table import Table
@@ -16,7 +17,7 @@ cov: coverage.Coverage
 @hook
 def before_session(config: Config):
     global cov
-    coverage_config: Dict[str, Any] = config.plugin_config.get("coverage", {})
+    coverage_config = get_config(config)
     cov = coverage.Coverage(
         data_file=coverage_config.get("data_file", ".coverage"),
         data_suffix=coverage_config.get("data_suffix", None),
@@ -41,10 +42,9 @@ def before_session(config: Config):
 @hook
 def after_session(config: Config) -> ConsoleRenderable:
     global cov
-
+    
     report = get_report()
-
-    coverage_config: Dict[str, Any] = config.plugin_config.get("coverage", {})
+    coverage_config = get_config(config)
     report_type = coverage_config.get("report_type", ["term"])
 
     if not isinstance(report_type, list):
@@ -55,6 +55,14 @@ def after_session(config: Config) -> ConsoleRenderable:
     if "term" in report_type:
         table = render_table(report)
         return Panel(table, title="[white bold]Coverage report", border_style="green", expand=False)
+
+def get_config(config):
+    coverage_config: Dict[str, Any] = config.plugin_config.get("coverage", {})
+
+    if len(coverage_config) == 0:
+        with open(str(config.config_path)) as f:
+            coverage_config = toml.load(f).get('tool', {}).get('ward', {}).get('plugins', {}).get('coverage',{})
+    return coverage_config
 
 
 def get_report():
