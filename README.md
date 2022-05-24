@@ -1,8 +1,6 @@
 # Ward Coverage
 
-## Overview
-
-__Disclaimer: Albeit useful already, this is a work-in-progress and should be seen as such. Contributors, issues and feature requests are welcome.__
+__Disclaimer: Albeit useful already, this is a work-in-progress and should be seen as such.__ 
 
 A coverage plugin for Python's [Ward testing framework](https://ward.readthedocs.io/en/latest/)
 
@@ -33,3 +31,5 @@ hook_module = ["ward_coverage"]
 There are several options to configure the plugin which can be included under section `[tool.ward.plugins.coverage]`, namely:
 - All the constructor parameters of `Coverage` class as described here: [https://coverage.readthedocs.io/en/6.4/api_coverage.html#coverage.Coverage](https://coverage.readthedocs.io/en/6.4/api_coverage.html#coverage.Coverage)
 - `report_type`, defaulting to `["term"]`, which is a list of report types to generate. Possible values are one or more of _'lcov'_, _'html'_, _'xml'_, _'json'_, _'term'_
+
+__Contributors, issues and feature requests are welcome.__
