@@ -1,0 +1,90 @@
+[tool.poetry]
+name = "ward_coverage"
+version = "0.1.1"
+description = "A coverage plugin for Ward testing framework"
+authors = ["Peter Vyboch <pvyboch1@gmail.com>"]
+license = "MIT"
+repository = 'https://github.com/petereon/ward_coverage'
+readme = 'README.md'
+keywords = ["python"]
+classifiers = [
+    'License :: OSI Approved :: MIT License',
+    'Programming Language :: Python :: 3',
+]
+packages = [{ include = "ward_coverage", from = "src" }]
+
+
+[tool.poe.tasks]
+install = { shell = "poetry install" }
+build = { shell = "poetry build" }
+clean = { shell = "rm -R ./dist .pytest_cache .mypy_cache &> /dev/null" }
+
+test = { shell = "pytest" }
+test-lint = { shell = "pytest --mypy --black" }
+
+format = { shell = "poetry run black ." }
+lint = { shell = "poetry run mypy ." }
+
+install-self = { shell = "poetry run pip install ./dist/$(ls ./dist | grep .whl | tail -n 1) --force-reinstall" }
+uninstall-self = { shell = "poetry run pip uninstall ward_coverage" }
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.pytest.ini_options]
+python_files = ["*test*.py"]
+python_functions = ["test"]
+minversion = "6.0"
+addopts = "--pspec -p no:warnings --cov-report=xml --cov-report=term-missing --cov=ward_coverage"
+testpaths = ["test"]
+bdd_features_base_dir = "./test/bdd/features"
+markers = [
+    "bdd: marks tests as bdd (deselect with '-m \"not bdd\"')",
+    "unit: marks tests as unit (deselect with '-m \"not unit\"')",
+]
+
+[tool.coverage.run]
+omit = ['*test*']
+
+[tool.mypy]
+warn_return_any = true
+warn_unused_configs = true
+warn_unreachable = true
+
+[tool.black]
+line-length = 100
+
+[tool.poetry.dependencies]
+python = "^3.9"
+ward = "^0.66.0-beta.0"
+coverage = "^6.0"
+
+
+[tool.poetry.dev-dependencies]
+# Formatting and Typing
+black = { version = "*", allow-prereleases = true }
+mypy = "^0.942"
+
+# Expect Pattern Testing
+expects = "^0.9.0"
+
+# Pytest: Unit Testing
+pytest = "^6.0.0"
+pytest-describe = "^2.0.0"
+pytest-describe-it = "^0.1.0"
+
+# Pytest: Coverage
+pytest-cov = "^3.0.0"
+
+# Pytest: BDD
+pytest-bdd = "^5.0.0"
+
+# Pytest: Pretty
+pytest-pspec = "^0.0.4"
+pytest-clarity = "^1.0.0"
+
+# Formatting and Typing
+pytest-black = "^0.3.0"
+pytest-mypy = "^0.9.0"
