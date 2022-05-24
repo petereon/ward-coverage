@@ -6,6 +6,8 @@ __Disclaimer: Albeit useful already, this is a work-in-progress and should be se
 
 A coverage plugin for Python's [Ward testing framework](https://ward.readthedocs.io/en/latest/)
 
+![Example image](resources/screen.png)
+
 ## Installation
 
 Build the plugin:
