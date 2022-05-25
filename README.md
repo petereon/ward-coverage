@@ -1,5 +1,7 @@
 # Ward Coverage
 
+[![CI/CD](https://github.com/petereon/ward_coverage/actions/workflows/python-test.yml/badge.svg?branch=master)](https://github.com/petereon/ward_coverage/actions/workflows/python-test.yml) [![MyPy Lint](https://github.com/petereon/ward_coverage/actions/workflows/python-lint.yml/badge.svg?branch=master)](https://github.com/petereon/ward_coverage/actions/workflows/python-lint.yml)
+
 __Disclaimer: Albeit useful already, this is a work-in-progress and should be seen as such.__ 
 
 A coverage plugin for Python's [Ward testing framework](https://ward.readthedocs.io/en/latest/)
