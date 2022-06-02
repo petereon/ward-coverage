@@ -3,13 +3,13 @@ from distutils.command.install_headers import install_headers
 from typing import Any, Dict, List, Union
 from unittest import mock
 
-import coverage # type: ignore
-import toml # type: ignore
+import coverage  # type: ignore
+import toml  # type: ignore
 from rich.console import ConsoleRenderable
 from rich.panel import Panel
 from rich.table import Table
-from ward.config import Config # type: ignore
-from ward.hooks import hook # type: ignore
+from ward.config import Config  # type: ignore
+from ward.hooks import hook  # type: ignore
 
 cov: coverage.Coverage
 
@@ -42,7 +42,7 @@ def before_session(config: Config):
 @hook
 def after_session(config: Config) -> Union[ConsoleRenderable, None]:
     global cov
-    
+
     report = get_report()
     coverage_config = get_config(config)
     report_type = coverage_config.get("report_type", ["term"])
@@ -55,15 +55,18 @@ def after_session(config: Config) -> Union[ConsoleRenderable, None]:
     if "term" in report_type:
         table = render_table(report)
         return Panel(table, title="[white bold]Coverage report", border_style="green", expand=False)
-    
+
     return None
+
 
 def get_config(config: Config) -> Dict[str, Any]:
     coverage_config: Dict[str, Any] = config.plugin_config.get("coverage", {})
 
     if len(coverage_config) == 0:
         with open(str(config.config_path)) as f:
-            coverage_config = toml.load(f).get('tool', {}).get('ward', {}).get('plugins', {}).get('coverage',{})
+            coverage_config = (
+                toml.load(f).get("tool", {}).get("ward", {}).get("plugins", {}).get("coverage", {})
+            )
     return coverage_config
 
 
