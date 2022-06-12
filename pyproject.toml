@@ -19,8 +19,7 @@ install = { shell = "poetry install" }
 build = { shell = "poetry build" }
 clean = { shell = "rm -R ./dist .pytest_cache .mypy_cache &> /dev/null" }
 
-test = { shell = "pytest" }
-test-lint = { shell = "pytest --mypy --black" }
+test = { shell = "ward" }
 
 format = { shell = "poetry run black ." }
 lint = { shell = "poetry run mypy ." }
