@@ -1,7 +1,6 @@
 import os
 from ward import test, fixture
 from ward_coverage.hook_impl import (
-    get_config,
     get_preformatted_table,
     preprocess_missing_lines,
     render_table,
@@ -54,19 +53,3 @@ def _():
 
     assert table.columns[4].header == "Missing"
     assert table.columns[4].style == "red"
-
-
-@test("`get_config` loads config from file if there is none in `config` argument")
-def _(temp_config_plugins=temp_config_plugins):
-    mock = MagicMock()
-    mock.plugin_config = {}
-    mock.config_path = "/tmp/temp_config.toml"
-    assert get_config(mock) == {"something": 3}
-
-
-@test("`get_config` loads config from `config` argument if there is one")
-def _(temp_config_plugins=temp_config_plugins):
-    mock = MagicMock()
-    mock.plugin_config = {"coverage": {"test": 4}}
-    mock.config_path = "/tmp/temp_config.toml"
-    assert get_config(mock) == {"test": 4}
