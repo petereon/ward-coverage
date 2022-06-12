@@ -17,7 +17,7 @@ cov: coverage.Coverage
 @hook
 def before_session(config: Config):
     global cov
-    coverage_config = get_config(config)
+    coverage_config = config.plugin_config.get("coverage", {})
     cov = coverage.Coverage(
         data_file=coverage_config.get("data_file", ".coverage"),
         data_suffix=coverage_config.get("data_suffix", None),
@@ -44,7 +44,7 @@ def after_session(config: Config) -> Union[ConsoleRenderable, None]:
     global cov
 
     report = get_report()
-    coverage_config = get_config(config)
+    coverage_config = config.plugin_config.get("coverage", {})
     report_type = coverage_config.get("report_type", ["term"])
 
     if not isinstance(report_type, list):
@@ -57,17 +57,6 @@ def after_session(config: Config) -> Union[ConsoleRenderable, None]:
         return Panel(table, title="[white bold]Coverage report", border_style="green", expand=False)
 
     return None
-
-
-def get_config(config: Config) -> Dict[str, Any]:
-    coverage_config: Dict[str, Any] = config.plugin_config.get("coverage", {})
-
-    if len(coverage_config) == 0:
-        with open(str(config.config_path)) as f:
-            coverage_config = (
-                toml.load(f).get("tool", {}).get("ward", {}).get("plugins", {}).get("coverage", {})
-            )
-    return coverage_config
 
 
 def get_report() -> dict:
