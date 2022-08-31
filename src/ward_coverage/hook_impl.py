@@ -46,15 +46,16 @@ def after_session(config: Config) -> Union[ConsoleRenderable, None]:
     report = get_report()
     coverage_config = config.plugin_config.get("coverage", {})
     report_type = coverage_config.get("report_type", ["term"])
+    threshold = coverage_config.get("threshold", "80")
 
     if not isinstance(report_type, list):
         raise Exception("report_type must be a list")
 
     create_report_files(report_type)
-
+    passed = float(report["totals"]["percent_covered_display"]) > float(threshold)
     if "term" in report_type:
         table = render_table(report)
-        return Panel(table, title="[white bold]Coverage report", border_style="green", expand=False)
+        return Panel(table, title="[white bold]Coverage report", border_style="green" if passed else "red", expand=False)
 
     return None
 
