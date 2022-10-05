@@ -31,8 +31,19 @@ hook_module = ["ward_coverage"]
 ```
 
 There are several options to configure the plugin which can be included under section `[tool.ward.plugins.coverage]`, namely:
-- All the constructor parameters of `Coverage` class as described here: [https://coverage.readthedocs.io/en/6.4/api_coverage.html#coverage.Coverage](https://coverage.readthedocs.io/en/6.4/api_coverage.html#coverage.Coverage)
 - `report_type`, defaulting to `["term"]`, which is a list of report types to generate. Possible values are one or more of _'lcov'_, _'html'_, _'xml'_, _'json'_, _'term'_
 - `threshold` for minimum coverage, affecting the color the result panel has for some sort of visual cue
+- All of the options described [here](https://coverage.readthedocs.io/en/6.4.4/config.html#run-source-pkgs). Please note that everything here under [`[run]` section](https://coverage.readthedocs.io/en/6.4.4/config.html#run) goes to  `[tool.ward.plugins.coverage]` and other sections need their separate block (e.g `[tool.ward.plugins.coverage.report]`) or dictionary entry within the `[tool.ward.plugins.coverage]` section in toml.
+
+### Example configuration
+```toml
+[tool.ward.plugins.coverage]
+omit = ["*test*", "example.py", "**/__init__.py"]
+report_type = ["term", "xml"]
+source = ["."]
+branch = true
+relative_files = true
+report = {skip_empty = true}
+```
 
 __Contributors, issues and feature requests are welcome.__
