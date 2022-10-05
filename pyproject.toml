@@ -60,7 +60,7 @@ path = ['test']
 
 [tool.poetry.dependencies]
 python = "^3.7.8"
-ward = "^0.50"
+ward = ">0.50.0"
 coverage = "^6.0"
 toml= "^0.10.0"
 
