@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Union
 from unittest import mock
 
 import coverage  # type: ignore
+from coverage.exceptions import NoDataError # type: ignore
 import toml  # type: ignore
 from rich.console import ConsoleRenderable
 from rich.panel import Panel
@@ -42,20 +43,21 @@ def before_session(config: Config):
 @hook
 def after_session(config: Config) -> Union[ConsoleRenderable, None]:
     global cov
-
-    report = get_report()
+    try:
+        report = get_report()
+    except NoDataError:
+        return Panel("No data was collected", title="[white bold]Coverage report", border_style="green", expand=False) 
     coverage_config = config.plugin_config.get("coverage", {})
     report_type = coverage_config.get("report_type", ["term"])
-    threshold = coverage_config.get("threshold", "80")
 
     if not isinstance(report_type, list):
         raise Exception("report_type must be a list")
 
     create_report_files(report_type)
-    passed = float(report["totals"]["percent_covered_display"]) > float(threshold)
+
     if "term" in report_type:
         table = render_table(report)
-        return Panel(table, title="[white bold]Coverage report", border_style="green" if passed else "red", expand=False)
+        return Panel(table, title="[white bold]Coverage report", border_style="green", expand=False)
 
     return None
 
