@@ -4,8 +4,7 @@ from typing import Any, Dict, List, Union
 from unittest import mock
 
 import coverage  # type: ignore
-from coverage import CoverageException # type: ignore
-import toml  # type: ignore
+from coverage import CoverageException  # type: ignore
 from rich.console import ConsoleRenderable
 from rich.panel import Panel
 from rich.table import Table
@@ -19,24 +18,85 @@ cov: coverage.Coverage
 def before_session(config: Config):
     global cov
     coverage_config = config.plugin_config.get("coverage", {})
-    cov = coverage.Coverage(
-        data_file=coverage_config.get("data_file", ".coverage"),
-        data_suffix=coverage_config.get("data_suffix", None),
-        cover_pylib=coverage_config.get("cover_pylib", None),
-        auto_data=coverage_config.get("auto_data", False),
-        timid=coverage_config.get("timid", None),
-        branch=coverage_config.get("branch", None),
-        config_file=coverage_config.get("config_file", True),
-        source=coverage_config.get("source", None),
-        source_pkgs=coverage_config.get("source_pkgs", None),
-        omit=coverage_config.get("omit", None),
-        include=coverage_config.get("include", None),
-        debug=coverage_config.get("debug", None),
-        concurrency=coverage_config.get("concurrency", None),
-        check_preimported=coverage_config.get("check_preimported", False),
-        context=coverage_config.get("context", None),
-        messages=coverage_config.get("messages", False),
+    cov = coverage.Coverage()
+
+    # [run]
+    if coverage.__version__ >= "6.4":
+        cov.config.sigterm = get_in_versioned(coverage_config, ["sigterm"], cov.config.sigterm, '6.4')
+    if coverage.__version__ >= "5.3":
+        cov.config.source_pkgs = get_in_versioned(coverage_config, ["source_pkgs"], cov.config.source_pkgs, "5.3")
+
+    cov.config.command_line = get_in_versioned(coverage_config, ["command_line"], cov.config.command_line, '5.0')
+    cov.config.context = get_in_versioned(coverage_config, ["context"], cov.config.context, '5.0')
+    cov.config.relative_files = get_in_versioned(coverage_config, ["relative_files"], cov.config.relative_files, '5.0')
+    cov.config.concurrency = get_in_versioned(coverage_config, ["concurrency"], cov.config.concurrency, '4.0')
+
+    cov.config.branch = coverage_config.get("branch", cov.config.branch)
+    cov.config.cover_pylib = coverage_config.get("cover_pylib", cov.config.cover_pylib)
+    cov.config.data_file = coverage_config.get("data_file", cov.config.data_file)
+    cov.config.disable_warnings = coverage_config.get(
+        "disable_warnings", cov.config.disable_warnings
     )
+    cov.config.debug = coverage_config.get("debug", cov.config.debug)
+    cov.config.run_include = coverage_config.get("include", cov.config.run_include)
+    cov.config.run_omit = coverage_config.get("omit", cov.config.run_omit)
+    cov.config.parallel = coverage_config.get("parallel", cov.config.parallel)
+    cov.config.plugins = coverage_config.get("plugins", cov.config.plugins)
+    cov.config.source = coverage_config.get("source", cov.config.source)
+    cov.config.timid = coverage_config.get("timid", cov.config.timid)
+    cov.config.config_file = coverage_config.get("config_file", cov.config.config_file)
+    cov.config.dynamic_context = coverage_config.get("dynamic_context", cov.config.dynamic_context)
+
+    # [paths]
+    cov.config.paths = coverage_config.get("paths", cov.config.paths)
+
+    # [report]
+    cov.config.exclude_list = coverage_config.get("report", {}).get(
+        "exclude_lines", cov.config.exclude_list
+    )
+    cov.config.fail_under = coverage_config.get("report", {}).get(
+        "fail_under", cov.config.fail_under
+    )
+    cov.config.ignore_errors = coverage_config.get("report", {}).get(
+        "ignore_errors", cov.config.ignore_errors
+    )
+    cov.config.report_include = coverage_config.get("report", {}).get(
+        "include", cov.config.report_include
+    )
+    cov.config.report_omit = coverage_config.get("report", {}).get("omit", cov.config.report_omit)
+    cov.config.precision = coverage_config.get("report", {}).get("precision", cov.config.precision)
+    cov.config.skip_empty = coverage_config.get("report", {}).get(
+        "skip_empty", cov.config.skip_empty
+    )
+    if coverage.__version__ >= "5.2":
+        cov.config.sort = get_in_versioned(coverage_config, ["report", "sort"], cov.config.sort, '5.2')
+
+    # [html]
+    if coverage.__version__ >= "5.4":
+        cov.config.html_skip_covered = get_in_versioned(coverage_config, ["html", "skip_covered"], cov.config.html_skip_covered, "5.4")
+        cov.config.html_skip_empty = get_in_versioned(coverage_config, ["html", "skip_empty"], cov.config.html_skip_empty, "5.4")
+    cov.config.html_dir = coverage_config.get("html", {}).get("directory", cov.config.html_dir)
+    cov.config.extra_css = coverage_config.get("html", {}).get("extra_css", cov.config.extra_css)
+    cov.config.show_contexts = coverage_config.get("html", {}).get(
+        "show_contexts", cov.config.show_contexts
+    )
+    cov.config.html_title = coverage_config.get("html", {}).get("title", cov.config.html_title)
+
+    # [xml]
+    cov.config.xml_output = coverage_config.get("xml", {}).get("output", cov.config.xml_output)
+    cov.config.xml_package_depth = coverage_config.get("xml", {}).get(
+        "package_depth", cov.config.xml_package_depth
+    )
+
+    # [json]
+    cov.config.json_output = get_in_versioned(coverage_config, ["json", "output"], cov.config.json_output, "5.0")
+    cov.config.json_pretty_print = get_in_versioned(coverage_config, ["json", "pretty_print"], cov.config.json_pretty_print, "5.0")
+    cov.config.json_show_contexts = get_in_versioned(coverage_config, ["json", "show_contexts"], cov.config.json_show_contexts, "5.0")
+
+    # [lcov]
+    if coverage.__version__ >= "6.3":
+        cov.config.lcov_output = get_in_versioned(coverage_config, ["lcov","output"], cov.config.lcov_output, "6.3")
+
     cov.start()
 
 
@@ -46,7 +106,12 @@ def after_session(config: Config) -> Union[ConsoleRenderable, None]:
     try:
         report = get_report()
     except CoverageException:
-        return Panel("No data was collected", title="[white bold]Coverage report", border_style="green", expand=False) 
+        return Panel(
+            "No data was collected",
+            title="[white bold]Coverage report",
+            border_style="green",
+            expand=False,
+        )
     coverage_config = config.plugin_config.get("coverage", {})
     report_type = coverage_config.get("report_type", ["term"])
 
@@ -98,7 +163,7 @@ def render_table(report: dict) -> Table:
             filename,
             str(file_report["summary"]["num_statements"]),
             str(file_report["summary"]["missing_lines"]),
-            file_report["summary"]["percent_covered_display"] + "%",
+            str(round(file_report["summary"]["percent_covered"])) + "%",
             preprocess_missing_lines(file_report["missing_lines"]),
         )
     table.add_row("", "", "", "", "")
@@ -106,7 +171,7 @@ def render_table(report: dict) -> Table:
         "Total",
         str(report["totals"]["num_statements"]),
         str(report["totals"]["missing_lines"]),
-        report["totals"]["percent_covered_display"] + "%",
+        str(round(report["totals"]["percent_covered"])) + "%",
         "",
         style="bold",
     )
@@ -145,3 +210,16 @@ def group_sequence(lst: List[int]) -> list:
         else:
             res.append([lst[i]])
     return res
+
+def get_in_versioned(dictionary: dict, path: list, default: Any, version: str) -> Any:
+    result = dictionary
+    for path_part in path:
+        try:
+            result = result[path_part]
+        except KeyError:
+            result = default
+            break
+    if (result != default) and (version > coverage.__version__):
+        print(f'Option {".".join(path[:-1])} unavailable until version {version}. Your current version is {coverage.__version__}')
+    return result
+    
