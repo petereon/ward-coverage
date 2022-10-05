@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Union
 from unittest import mock
 
 import coverage  # type: ignore
-from coverage.exceptions import NoDataError # type: ignore
+from coverage import CoverageException # type: ignore
 import toml  # type: ignore
 from rich.console import ConsoleRenderable
 from rich.panel import Panel
@@ -45,7 +45,7 @@ def after_session(config: Config) -> Union[ConsoleRenderable, None]:
     global cov
     try:
         report = get_report()
-    except NoDataError:
+    except CoverageException:
         return Panel("No data was collected", title="[white bold]Coverage report", border_style="green", expand=False) 
     coverage_config = config.plugin_config.get("coverage", {})
     report_type = coverage_config.get("report_type", ["term"])
