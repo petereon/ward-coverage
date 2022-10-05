@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ward_coverage"
-version = "0.2.0"
+version = "0.2.1"
 description = "A coverage plugin for Ward testing framework"
 authors = ["Peter Vyboch <pvyboch1@gmail.com>"]
 license = "MIT"
@@ -59,10 +59,11 @@ line-length = 100
 path = ['test']
 
 [tool.poetry.dependencies]
-python = "^3.7.8"
-ward = ">0.50.0"
-coverage = "^6.0"
+python = "^3.7.0"
+coverage = "^5.0"
 toml= "^0.10.0"
+ward = "^0.66.0b0"
+cucumber-tag-expressions = ">3"
 
 
 [tool.poetry.dev-dependencies]
