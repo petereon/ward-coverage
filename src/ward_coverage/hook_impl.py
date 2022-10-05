@@ -22,14 +22,24 @@ def before_session(config: Config):
 
     # [run]
     if coverage.__version__ >= "6.4":
-        cov.config.sigterm = get_in_versioned(coverage_config, ["sigterm"], cov.config.sigterm, '6.4')
+        cov.config.sigterm = get_in_versioned(
+            coverage_config, ["sigterm"], cov.config.sigterm, "6.4"
+        )
     if coverage.__version__ >= "5.3":
-        cov.config.source_pkgs = get_in_versioned(coverage_config, ["source_pkgs"], cov.config.source_pkgs, "5.3")
+        cov.config.source_pkgs = get_in_versioned(
+            coverage_config, ["source_pkgs"], cov.config.source_pkgs, "5.3"
+        )
 
-    cov.config.command_line = get_in_versioned(coverage_config, ["command_line"], cov.config.command_line, '5.0')
-    cov.config.context = get_in_versioned(coverage_config, ["context"], cov.config.context, '5.0')
-    cov.config.relative_files = get_in_versioned(coverage_config, ["relative_files"], cov.config.relative_files, '5.0')
-    cov.config.concurrency = get_in_versioned(coverage_config, ["concurrency"], cov.config.concurrency, '4.0')
+    cov.config.command_line = get_in_versioned(
+        coverage_config, ["command_line"], cov.config.command_line, "5.0"
+    )
+    cov.config.context = get_in_versioned(coverage_config, ["context"], cov.config.context, "5.0")
+    cov.config.relative_files = get_in_versioned(
+        coverage_config, ["relative_files"], cov.config.relative_files, "5.0"
+    )
+    cov.config.concurrency = get_in_versioned(
+        coverage_config, ["concurrency"], cov.config.concurrency, "4.0"
+    )
 
     cov.config.branch = coverage_config.get("branch", cov.config.branch)
     cov.config.cover_pylib = coverage_config.get("cover_pylib", cov.config.cover_pylib)
@@ -69,12 +79,18 @@ def before_session(config: Config):
         "skip_empty", cov.config.skip_empty
     )
     if coverage.__version__ >= "5.2":
-        cov.config.sort = get_in_versioned(coverage_config, ["report", "sort"], cov.config.sort, '5.2')
+        cov.config.sort = get_in_versioned(
+            coverage_config, ["report", "sort"], cov.config.sort, "5.2"
+        )
 
     # [html]
     if coverage.__version__ >= "5.4":
-        cov.config.html_skip_covered = get_in_versioned(coverage_config, ["html", "skip_covered"], cov.config.html_skip_covered, "5.4")
-        cov.config.html_skip_empty = get_in_versioned(coverage_config, ["html", "skip_empty"], cov.config.html_skip_empty, "5.4")
+        cov.config.html_skip_covered = get_in_versioned(
+            coverage_config, ["html", "skip_covered"], cov.config.html_skip_covered, "5.4"
+        )
+        cov.config.html_skip_empty = get_in_versioned(
+            coverage_config, ["html", "skip_empty"], cov.config.html_skip_empty, "5.4"
+        )
     cov.config.html_dir = coverage_config.get("html", {}).get("directory", cov.config.html_dir)
     cov.config.extra_css = coverage_config.get("html", {}).get("extra_css", cov.config.extra_css)
     cov.config.show_contexts = coverage_config.get("html", {}).get(
@@ -89,13 +105,21 @@ def before_session(config: Config):
     )
 
     # [json]
-    cov.config.json_output = get_in_versioned(coverage_config, ["json", "output"], cov.config.json_output, "5.0")
-    cov.config.json_pretty_print = get_in_versioned(coverage_config, ["json", "pretty_print"], cov.config.json_pretty_print, "5.0")
-    cov.config.json_show_contexts = get_in_versioned(coverage_config, ["json", "show_contexts"], cov.config.json_show_contexts, "5.0")
+    cov.config.json_output = get_in_versioned(
+        coverage_config, ["json", "output"], cov.config.json_output, "5.0"
+    )
+    cov.config.json_pretty_print = get_in_versioned(
+        coverage_config, ["json", "pretty_print"], cov.config.json_pretty_print, "5.0"
+    )
+    cov.config.json_show_contexts = get_in_versioned(
+        coverage_config, ["json", "show_contexts"], cov.config.json_show_contexts, "5.0"
+    )
 
     # [lcov]
     if coverage.__version__ >= "6.3":
-        cov.config.lcov_output = get_in_versioned(coverage_config, ["lcov","output"], cov.config.lcov_output, "6.3")
+        cov.config.lcov_output = get_in_versioned(
+            coverage_config, ["lcov", "output"], cov.config.lcov_output, "6.3"
+        )
 
     cov.start()
 
@@ -211,6 +235,7 @@ def group_sequence(lst: List[int]) -> list:
             res.append([lst[i]])
     return res
 
+
 def get_in_versioned(dictionary: dict, path: list, default: Any, version: str) -> Any:
     result = dictionary
     for path_part in path:
@@ -220,6 +245,7 @@ def get_in_versioned(dictionary: dict, path: list, default: Any, version: str) -
             result = default
             break
     if (result != default) and (version > coverage.__version__):
-        print(f'Option {".".join(path[:-1])} unavailable until version {version}. Your current version is {coverage.__version__}')
+        print(
+            f'Option {".".join(path[:-1])} unavailable until version {version}. Your current version is {coverage.__version__}'
+        )
     return result
-    
