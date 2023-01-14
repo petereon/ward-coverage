@@ -1,6 +1,9 @@
 # Ward Coverage
 
-[![CI/CD](https://github.com/petereon/ward_coverage/actions/workflows/python-test.yml/badge.svg?branch=master)](https://github.com/petereon/ward_coverage/actions/workflows/python-test.yml) [![MyPy Lint](https://github.com/petereon/ward_coverage/actions/workflows/python-lint.yml/badge.svg?branch=master)](https://github.com/petereon/ward_coverage/actions/workflows/python-lint.yml) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=petereon_ward_coverage&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=petereon_ward_coverage)
+[![CI/CD](https://github.com/petereon/ward_coverage/actions/workflows/python-test.yml/badge.svg?branch=master)](https://github.com/petereon/ward_coverage/actions/workflows/python-test.yml) 
+[![MyPy Lint](https://github.com/petereon/ward_coverage/actions/workflows/python-lint.yml/badge.svg?branch=master)](https://github.com/petereon/ward_coverage/actions/workflows/python-lint.yml) 
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=petereon_ward_coverage&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=petereon_ward_coverage)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/ward-coverage)
 
 __Disclaimer: Albeit useful already, this is a work-in-progress and should be seen as such.__ 
 
