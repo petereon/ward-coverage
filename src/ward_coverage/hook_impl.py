@@ -1,5 +1,4 @@
 import os
-from distutils.command.install_headers import install_headers
 from typing import Any, Dict, List, Union
 from unittest import mock
 
