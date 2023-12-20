@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ward_coverage"
-version = "0.3.0"
+version = "0.3.1"
 description = "A coverage plugin for Ward testing framework"
 authors = ["Peter Vyboch <pvyboch1@gmail.com>"]
 license = "MIT"
